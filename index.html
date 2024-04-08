@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Processing Web App</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <div id="drop-area">
+      <input type="file" id="fileElem" accept="image/*" multiple onchange="handleFiles(this.files)">
+      <label for="fileElem" id="fileSelect">
+        Drag & Drop your image here or click to select
+      </label>
+    </div>
+    <canvas id="canvas"></canvas>
+    <button id="downloadBtn" disabled>Download Processed Image</button>
+    <div>
+        <label for="blurRange">Amount:</label>
+        <input type="range" id="blurRange" min="0" max="20" step="1" value="10">
+        <output id="blurValue">10</output>
+      </div>
+      <div>
+        <label for="brightnessRange">Brightness Threshold:</label>
+        <input type="range" id="brightnessRange" min="0" max="255" step="1" value="200">
+        <output id="brightnessValue">200</output>
+      </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
