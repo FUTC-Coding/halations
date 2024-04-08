@@ -1,5 +1,6 @@
 let blurAmount = 10;
 let brightnessThreshold = 200;
+let strength = 50;
 let img;
 
 function handleFiles(files) {
@@ -71,7 +72,8 @@ function processImage() {
     for (let i = 0; i < redData.length; i += 4) {
         // If the pixel is non-black (isolated and blurred parts), set the red channel to maximum
         if (redData[i] !== 0 || redData[i + 1] !== 0 || redData[i + 2] !== 0) {
-            redData[i] = 255; // Set red channel to maximum
+            let brightness = (redData[i] + redData[i + 1] + redData[i + 2]) / 3;
+            redData[i] = Math.min(255, brightness + strength); // Set red channel to the brightness of that pixel
             redData[i + 1] = 0; // Set green channel to 0
             redData[i + 2] = 0; // Set blue channel to 0
         }
@@ -134,21 +136,30 @@ document.getElementById('drop-area').addEventListener('drop', function (event) {
 
 let debounceTimer;
 
-// Update blur amount and brightness threshold when sliders are adjusted
-document.getElementById('blurRange').addEventListener('input', function(event) {
-  clearTimeout(debounceTimer);
-  debounceTimer = setTimeout(function() {
-    blurAmount = parseInt(event.target.value);
-    document.getElementById('blurValue').textContent = blurAmount;
-    processImage();
-  }, 500); // Adjust the delay as needed
+// Update blur amount, strength, and brightness threshold when sliders are adjusted
+document.getElementById('blurRange').addEventListener('input', function (event) {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(function () {
+        blurAmount = parseInt(event.target.value);
+        document.getElementById('blurValue').textContent = blurAmount;
+        processImage();
+    }, 500); // Adjust the delay as needed
 });
 
-document.getElementById('brightnessRange').addEventListener('input', function(event) {
-  clearTimeout(debounceTimer);
-  debounceTimer = setTimeout(function() {
-    brightnessThreshold = parseInt(event.target.value);
-    document.getElementById('brightnessValue').textContent = brightnessThreshold;
-    processImage();
-  }, 500); // Adjust the delay as needed
+document.getElementById('strengthRange').addEventListener('input', function (event) {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(function () {
+        strength = parseInt(event.target.value);
+        document.getElementById('strengthValue').textContent = strength;
+        processImage();
+    }, 500); // Adjust the delay as needed
+});
+
+document.getElementById('brightnessRange').addEventListener('input', function (event) {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(function () {
+        brightnessThreshold = parseInt(event.target.value);
+        document.getElementById('brightnessValue').textContent = brightnessThreshold;
+        processImage();
+    }, 500); // Adjust the delay as needed
 });
