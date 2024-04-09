@@ -1,3 +1,5 @@
+import Jimp from "jimp";
+
 let blurAmount = 10;
 let brightnessThreshold = 200;
 let strength = 50;
@@ -22,6 +24,8 @@ function handleFiles(files) {
 }
 
 function processImage() {
+    var startTime = performance.now();
+
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
     // Step 1: Create a black and white copy of the original image
@@ -107,6 +111,8 @@ function processImage() {
     // Draw the final processed image onto the main canvas
     ctx.drawImage(processedCanvas, 0, 0);
 
+    var endTime = performance.now();
+    console.log('process image took ' + (endTime - startTime) + 'ms');
 
     // Enable download button
     const downloadBtn = document.getElementById('downloadBtn');
