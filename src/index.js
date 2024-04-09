@@ -1,4 +1,9 @@
-import Jimp from "jimp";
+import 'jimp';
+const cachedJpegDecoder = Jimp.decoders['image/jpeg']
+Jimp.decoders['image/jpeg'] = (data) => {
+    const userOpts = { maxMemoryUsageInMB: 1024 }
+    return cachedJpegDecoder(data, userOpts)
+}
 
 let blurAmount = 10;
 let brightnessThreshold = 200;
@@ -16,11 +21,49 @@ function handleFiles(files) {
             canvas.height = img.height;
             ctx.drawImage(img, 0, 0);
 
-            processImage()
+            processImageWithJimp();
         }
         img.src = reader.result;
     }
     reader.readAsDataURL(files[0]);
+}
+
+function processImageWithJimp() {
+    var startTime = performance.now();
+    let processedImage = new Jimp(img.src, function (err, image) {
+        err ? console.log('image err' + err) : console.log('copy created and ready for use');
+
+        image
+            .greyscale()
+            .scan(0, 0, image.bitmap.width, image.bitmap.height, function (x, y, idx) {
+                const brightness = (this.bitmap.data[idx] + this.bitmap.data[idx + 1] + this.bitmap.data[idx + 2]) / 3;
+                if (brightness <= brightnessThreshold) {
+                    this.bitmap.data[idx] = this.bitmap.data[idx + 1] = this.bitmap.data[idx + 2] = 0; // set all channels to 0 for this pixel
+                } else {
+                    this.bitmap.data[idx] = Math.min(255, brightness + strength); // Set red channel to the brightness of that pixel
+                    this.bitmap.data[idx + 1] = 0; // set green to 0
+                    this.bitmap.data[idx + 2] = 0; // set blue to 0
+                }
+            })
+            .blur(blurAmount);
+
+        return image;
+    });
+    
+    Jimp.read(img.src).then(function(image) {
+        image.composite(processedImage, 0, 0, { mode: Jimp.BLEND_SCREEN });
+        const imageData = new ImageData(
+            Uint8ClampedArray.from(image.bitmap.data),
+            image.bitmap.width,
+            image.bitmap.height
+        );
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        ctx.putImageData(imageData, 0, 0);
+    });
+
+    var endTime = performance.now();
+    console.log('process image with jimp took ' + (endTime - startTime) + 'ms');
 }
 
 function processImage() {
@@ -148,8 +191,8 @@ document.getElementById('blurRange').addEventListener('input', function (event) 
     debounceTimer = setTimeout(function () {
         blurAmount = parseInt(event.target.value);
         document.getElementById('blurValue').textContent = blurAmount;
-        processImage();
-    }, 500); // Adjust the delay as needed
+        processImageWithJimp();
+    }, 100); // Adjust the delay as needed
 });
 
 document.getElementById('strengthRange').addEventListener('input', function (event) {
@@ -157,8 +200,8 @@ document.getElementById('strengthRange').addEventListener('input', function (eve
     debounceTimer = setTimeout(function () {
         strength = parseInt(event.target.value);
         document.getElementById('strengthValue').textContent = strength;
-        processImage();
-    }, 500); // Adjust the delay as needed
+        processImageWithJimp();
+    }, 100); // Adjust the delay as needed
 });
 
 document.getElementById('brightnessRange').addEventListener('input', function (event) {
@@ -166,6 +209,6 @@ document.getElementById('brightnessRange').addEventListener('input', function (e
     debounceTimer = setTimeout(function () {
         brightnessThreshold = parseInt(event.target.value);
         document.getElementById('brightnessValue').textContent = brightnessThreshold;
-        processImage();
-    }, 500); // Adjust the delay as needed
+        processImageWithJimp();
+    }, 100); // Adjust the delay as needed
 });
