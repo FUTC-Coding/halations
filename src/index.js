@@ -29,41 +29,23 @@ function handleFiles(files) {
 }
 
 function processImageWithJimp() {
-    var startTime = performance.now();
-    let processedImage = new Jimp(img.src, function (err, image) {
-        err ? console.log('image err' + err) : console.log('copy created and ready for use');
+    var worker = new Worker(new URL('./jimpworker.js', import.meta.url));
+    worker.onmessage = function (e) {
+        // const imageData = new ImageData(
+        //     Uint8ClampedArray.from(image.bitmap.data),
+        //     image.bitmap.width,
+        //     image.bitmap.height
+        // );
 
-        image
-            .greyscale()
-            .scan(0, 0, image.bitmap.width, image.bitmap.height, function (x, y, idx) {
-                const brightness = (this.bitmap.data[idx] + this.bitmap.data[idx + 1] + this.bitmap.data[idx + 2]) / 3;
-                if (brightness <= brightnessThreshold) {
-                    this.bitmap.data[idx] = this.bitmap.data[idx + 1] = this.bitmap.data[idx + 2] = 0; // set all channels to 0 for this pixel
-                } else {
-                    this.bitmap.data[idx] = Math.min(255, brightness + strength); // Set red channel to the brightness of that pixel
-                    this.bitmap.data[idx + 1] = 0; // set green to 0
-                    this.bitmap.data[idx + 2] = 0; // set blue to 0
-                }
-            })
-            .blur(blurAmount);
-
-        return image;
-    });
-    
-    Jimp.read(img.src).then(function(image) {
-        image.composite(processedImage, 0, 0, { mode: Jimp.BLEND_SCREEN });
-        const imageData = new ImageData(
-            Uint8ClampedArray.from(image.bitmap.data),
-            image.bitmap.width,
-            image.bitmap.height
-        );
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
-        ctx.putImageData(imageData, 0, 0);
-    });
-
-    var endTime = performance.now();
-    console.log('process image with jimp took ' + (endTime - startTime) + 'ms');
+        var finalImage = new Image();
+        finalImage.onload = function() {
+            ctx.drawImage(finalImage, 0, 0);
+        }
+        finalImage.src = e.data;
+    }
+    worker.postMessage({ src: img.src, blurAmount: blurAmount, brightnessThreshold: brightnessThreshold, strength: strength });
 }
 
 function processImage() {
