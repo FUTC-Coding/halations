@@ -21,11 +21,38 @@ function handleFiles(files) {
             canvas.height = img.height;
             ctx.drawImage(img, 0, 0);
 
-            processImageWithJimp();
+            processImageWithPhoton();
         }
         img.src = reader.result;
     }
     reader.readAsDataURL(files[0]);
+}
+
+function processImageWithPhoton() {
+    var startTime = performance.now();
+    import('@silvia-odwyer/photon').then(photon => {
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        let originalImage = photon.open_image(canvas, ctx);
+        photon.resize_img_browser(originalImage, originalImage.get_width() * 0.3, originalImage.get_height() * 0.3, 1)
+        let photonImage = photon.open_image(canvas, ctx);
+        photon.resize_img_browser(photonImage, photonImage.get_width() * 0.3, photonImage.get_height() * 0.3, 1)
+
+        //photon.r_grayscale(photonImage);
+        photon.threshold(photonImage, brightnessThreshold);
+
+        //maybe edge detect here?
+        photon.gaussian_blur(photonImage, blurAmount);
+        photon.remove_blue_channel(photonImage);
+        photon.remove_green_channel(photonImage);
+        photon.alter_red_channel(photonImage, strength)
+        photon.gaussian_blur(photonImage, blurAmount);
+        photon.blend(originalImage, photonImage, 'screen')
+
+        photon.putImageData(canvas, ctx, originalImage);
+    });
+    var endTime = performance.now();
+    console.log('processImageWithPhoton took ' + (endTime - startTime) + 'ms');
 }
 
 function processImageWithJimp() {
@@ -173,7 +200,7 @@ document.getElementById('blurRange').addEventListener('input', function (event) 
     debounceTimer = setTimeout(function () {
         blurAmount = parseInt(event.target.value);
         document.getElementById('blurValue').textContent = blurAmount;
-        processImageWithJimp();
+        processImageWithPhoton();
     }, 100); // Adjust the delay as needed
 });
 
@@ -182,7 +209,7 @@ document.getElementById('strengthRange').addEventListener('input', function (eve
     debounceTimer = setTimeout(function () {
         strength = parseInt(event.target.value);
         document.getElementById('strengthValue').textContent = strength;
-        processImageWithJimp();
+        processImageWithPhoton();
     }, 100); // Adjust the delay as needed
 });
 
@@ -191,6 +218,6 @@ document.getElementById('brightnessRange').addEventListener('input', function (e
     debounceTimer = setTimeout(function () {
         brightnessThreshold = parseInt(event.target.value);
         document.getElementById('brightnessValue').textContent = brightnessThreshold;
-        processImageWithJimp();
+        processImageWithPhoton();
     }, 100); // Adjust the delay as needed
 });

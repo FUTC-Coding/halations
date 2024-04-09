@@ -11,4 +11,7 @@ module.exports = {
     devServer: {
         static: './dist',
     },
+    experiments: {
+        syncWebAssembly: true,
+    }
 };
