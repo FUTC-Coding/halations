@@ -9,6 +9,8 @@ let blurAmount = 10;
 let brightnessThreshold = 200;
 let strength = 50;
 let img;
+let scaledWidth;
+let scaledHeight;
 
 function handleFiles(files) {
     const reader = new FileReader();
@@ -17,11 +19,15 @@ function handleFiles(files) {
         img.onload = function () {
             const canvas = document.getElementById('canvas');
             const ctx = canvas.getContext('2d');
-            canvas.width = img.width;
-            canvas.height = img.height;
+            //const scaleFactor = Math.min(1, canvas.width / img.width, canvas.height / img.height);
+            const scaleFactor = 0.1;
+            scaledWidth = img.width * scaleFactor;
+            scaledHeight = img.height * scaleFactor;
+            canvas.width = scaledWidth;
+            canvas.height = canvas.width * (img.height / img.width);
             ctx.drawImage(img, 0, 0);
 
-            processImageWithPhoton();
+            processImage();
         }
         img.src = reader.result;
     }
@@ -83,9 +89,9 @@ function processImage() {
     // Step 1: Create a black and white copy of the original image
     const bwCanvas = document.createElement('canvas');
     const bwCtx = bwCanvas.getContext('2d');
-    bwCanvas.width = img.width;
-    bwCanvas.height = img.height;
-    bwCtx.drawImage(img, 0, 0);
+    bwCanvas.width = scaledWidth;
+    bwCanvas.height = scaledHeight;
+    bwCtx.drawImage(img, 0, 0, scaledWidth, scaledHeight);
     const imageData = bwCtx.getImageData(0, 0, bwCanvas.width, bwCanvas.height);
     const data = imageData.data;
     for (let i = 0; i < data.length; i += 4) {
@@ -108,19 +114,19 @@ function processImage() {
     // Step 3: Apply Gaussian Blur to the bright parts of the black and white copy
     const blurCanvas = document.createElement('canvas');
     const blurCtx = blurCanvas.getContext('2d');
-    blurCanvas.width = img.width;
-    blurCanvas.height = img.height;
+    blurCanvas.width = scaledWidth;
+    blurCanvas.height = scaledHeight;
     blurCtx.filter = 'blur(' + blurAmount + 'px)'; // Adjust the blur radius as needed
-    blurCtx.drawImage(bwCanvas, 0, 0);
+    blurCtx.drawImage(bwCanvas, 0, 0, scaledWidth, scaledHeight);
 
     // Step 4: Turn the isolated and blurred parts of the copy red
     const redCanvas = document.createElement('canvas');
-    redCanvas.width = img.width;
-    redCanvas.height = img.height;
+    redCanvas.width = scaledWidth;
+    redCanvas.height = scaledHeight;
     const redCtx = redCanvas.getContext('2d');
 
     // Draw the blurred and isolated parts onto the red canvas
-    redCtx.drawImage(blurCanvas, 0, 0);
+    redCtx.drawImage(blurCanvas, 0, 0, scaledWidth, scaledHeight);
 
     // Set the red channel to maximum for the isolated and blurred parts
     const redImageData = redCtx.getImageData(0, 0, redCanvas.width, redCanvas.height);
@@ -138,30 +144,30 @@ function processImage() {
 
     // Step 5: Blur the isolated and red-colored parts again to create a smooth falloff
     const halationBlurCanvas = document.createElement('canvas');
-    halationBlurCanvas.width = img.width;
-    halationBlurCanvas.height = img.height;
+    halationBlurCanvas.width = scaledWidth;
+    halationBlurCanvas.height = scaledHeight;
     const halationBlurCtx = halationBlurCanvas.getContext('2d');
-    halationBlurCanvas.width = img.width;
-    halationBlurCanvas.height = img.height;
+    halationBlurCanvas.width = scaledWidth;
+    halationBlurCanvas.height = scaledHeight;
     halationBlurCtx.filter = 'blur(' + blurAmount + 'px)'; // Adjust the blur radius as needed
-    halationBlurCtx.drawImage(redCanvas, 0, 0);
+    halationBlurCtx.drawImage(redCanvas, 0, 0, scaledWidth, scaledHeight);
 
     // Create a new canvas for the final processed image
     const processedCanvas = document.createElement('canvas');
-    processedCanvas.width = img.width;
-    processedCanvas.height = img.height;
+    processedCanvas.width = scaledWidth;
+    processedCanvas.height = scaledHeight;
     const processedCtx = processedCanvas.getContext('2d');
 
     // Step 6: Composite the red copy over the original image using the "screen" blend mode
     // Draw the original image first
-    processedCtx.drawImage(img, 0, 0);
+    processedCtx.drawImage(img, 0, 0, scaledWidth, scaledHeight);
 
     // Set the blending mode to "screen" and draw the red copy
     processedCtx.globalCompositeOperation = 'screen';
-    processedCtx.drawImage(halationBlurCanvas, 0, 0);
+    processedCtx.drawImage(halationBlurCanvas, 0, 0, scaledWidth, scaledHeight);
 
     // Draw the final processed image onto the main canvas
-    ctx.drawImage(processedCanvas, 0, 0);
+    ctx.drawImage(processedCanvas, 0, 0, scaledWidth, scaledHeight);
 
     var endTime = performance.now();
     console.log('process image took ' + (endTime - startTime) + 'ms');
@@ -200,7 +206,7 @@ document.getElementById('blurRange').addEventListener('input', function (event) 
     debounceTimer = setTimeout(function () {
         blurAmount = parseInt(event.target.value);
         document.getElementById('blurValue').textContent = blurAmount;
-        processImageWithPhoton();
+        processImage();
     }, 100); // Adjust the delay as needed
 });
 
@@ -209,7 +215,7 @@ document.getElementById('strengthRange').addEventListener('input', function (eve
     debounceTimer = setTimeout(function () {
         strength = parseInt(event.target.value);
         document.getElementById('strengthValue').textContent = strength;
-        processImageWithPhoton();
+        processImage();
     }, 100); // Adjust the delay as needed
 });
 
@@ -218,6 +224,6 @@ document.getElementById('brightnessRange').addEventListener('input', function (e
     debounceTimer = setTimeout(function () {
         brightnessThreshold = parseInt(event.target.value);
         document.getElementById('brightnessValue').textContent = brightnessThreshold;
-        processImageWithPhoton();
+        processImage();
     }, 100); // Adjust the delay as needed
 });
