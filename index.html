@@ -1,41 +1,13 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Halations Web App</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-
-<body>
-    <div class="container">
-        <h1>Add Halations to your images</h1>
-        <div id="drop-area">
-            <input type="file" id="fileElem" accept="image/*" multiple onchange="handleFiles(this.files)">
-            <label for="fileElem" id="fileSelect">
-                Drag & Drop your image here or click to select
-            </label>
-        </div>
-        <canvas id="canvas"></canvas>
-        <button id="downloadBtn" disabled>Download Processed Image</button>
-        <div>
-            <label for="blurRange">Amount:</label>
-            <input type="range" id="blurRange" min="0" max="30" step="1" value="10">
-            <output id="blurValue">10</output>
-        </div>
-        <div>
-            <label for="strengthRange">Strength:</label>
-            <input type="range" id="strengthRange" min="0" max="100" step="1" value="50">
-            <output id="strengthValue">50</output>
-        </div>
-        <div>
-            <label for="brightnessRange">Brightness Threshold:</label>
-            <input type="range" id="brightnessRange" min="0" max="255" step="1" value="200">
-            <output id="brightnessValue">200</output>
-        </div>
-    </div>
-    <script src="script.js"></script>
-</body>
-
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="./favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FUTC's Halationify</title>
+  </head>
+  <body class="dark">
+    <div id="dropzone" class="dropzone"></div>
+    <script type="module" src="main.js"></script>
+  </body>
 </html>
