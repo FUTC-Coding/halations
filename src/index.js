@@ -119,11 +119,15 @@ export function fullResDownload() {
   const worker = new Worker(new URL("./photonworker.js", import.meta.url));
   worker.onmessage = function (e) {
     tempCtx.putImageData(e.data, 0, 0);
-    const dataURL = tempCanvas.toDataURL("image/jpeg", 1); // Quality set to 1 (100%)
     const a = document.createElement("a");
-    a.href = dataURL;
-    a.download = "processed_image.jpg";
-    a.click();
+    tempCanvas.toBlob(function(blob) {
+        a.href = URL.createObjectURL(blob);
+        console.log(a.href);
+        a.download = "processed_image.jpg";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    }, "image/jpg");
     document.getElementById("downloadSnackbar").classList.remove("active");
     // terminate the worker because it has finished processing
     worker.terminate();
