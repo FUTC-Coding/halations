@@ -83,6 +83,8 @@ export function updateCanvas() {
     const canvas = document.getElementById("canvas");
     const ctx = canvas.getContext("2d");
     ctx.putImageData(e.data, 0, 0);
+    // terminate the worker because it has finished processing
+    worker.terminate();
   };
   worker.postMessage({
     imageData: imageData,
@@ -123,6 +125,8 @@ export function fullResDownload() {
     a.download = "processed_image.jpg";
     a.click();
     document.getElementById("downloadSnackbar").classList.remove("active");
+    // terminate the worker because it has finished processing
+    worker.terminate();
   };
 
   worker.postMessage({
