@@ -43,7 +43,7 @@ export const Dropzone = () => {
 export const Navigation = (classes) => {
   return nav(
     { class: classes },
-    img({ src: logo, class: "small-margin m l" }),
+    img({ src: logo, class: "small-margin m l", style: "max-height: 60px;" }),
     a(
       {
         onclick: (e) => {
