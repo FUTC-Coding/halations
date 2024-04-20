@@ -120,14 +120,14 @@ export function fullResDownload() {
   worker.onmessage = function (e) {
     tempCtx.putImageData(e.data, 0, 0);
     const a = document.createElement("a");
-    tempCanvas.toBlob(function(blob) {
-        a.href = URL.createObjectURL(blob);
-        console.log(a.href);
-        a.download = "processed_image.jpg";
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-    }, "image/jpg");
+    tempCanvas.toBlob(function (blob) {
+      a.href = URL.createObjectURL(blob);
+      console.log(a.href);
+      a.download = "processed_image.jpg";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }, "image/jpeg");
     document.getElementById("downloadSnackbar").classList.remove("active");
     // terminate the worker because it has finished processing
     worker.terminate();
