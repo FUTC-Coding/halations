@@ -9,6 +9,7 @@ let uploadedImage;
 let scaledWidth;
 let scaledHeight;
 let scaleFactor = 0.2;
+let fileName;
 
 export function setBlurAmount(value) {
   blurAmount = value;
@@ -27,6 +28,9 @@ export function handleFiles(files) {
   reader.onload = function () {
     uploadedImage = new Image();
     uploadedImage.onload = function () {
+      // set file name
+      fileName = files[0].name;
+
       const canvas = document.getElementById("canvas");
       const ctx = canvas.getContext("2d");
       // unhide canvas to display image
@@ -114,7 +118,7 @@ export function fullResDownload() {
     tempCanvas.toBlob(function (blob) {
       a.href = URL.createObjectURL(blob);
       console.log(a.href);
-      a.download = "processed_image.jpg";
+      a.download = fileName.split(".")[0] + "_halations" + ".jpeg";
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
