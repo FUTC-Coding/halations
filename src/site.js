@@ -326,8 +326,15 @@ export const Main = () => {
   );
 };
 
+// Add everything to body
+const body = document.body;
 // set darkmode
-document.body.classList.add("dark");
+body.classList.add("dark");
+van.add(body, Dropzone());
+van.add(body, Navigation("m l left secondary"));
+van.add(body, Navigation("s bottom secondary"));
+van.add(body, Dialogs());
+van.add(body, Main());
 
 function handleDownload() {
   document.getElementById("downloadSnackbar").classList.add("active");

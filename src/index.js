@@ -1,7 +1,6 @@
 import "beercss";
 import "./style.css";
-import van from "vanjs-core";
-import { Navigation, Dialogs, Main, Dropzone } from "./site.js";
+import "./site.js";
 
 let blurAmount = 10;
 let brightnessThreshold = 200;
@@ -22,14 +21,6 @@ export function setBrightnessThreshold(value) {
 export function setStrength(value) {
   strength = value;
 }
-
-// Add everything to body
-const body = document.body;
-van.add(body, Dropzone());
-van.add(body, Navigation("m l left secondary"));
-van.add(body, Navigation("s bottom secondary"));
-van.add(body, Dialogs());
-van.add(body, Main());
 
 export function handleFiles(files) {
   const reader = new FileReader();
