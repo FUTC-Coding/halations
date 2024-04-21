@@ -245,7 +245,7 @@ export const Main = () => {
     button(
       { id: "uploadButton" },
       i("attach_file"),
-      span("Upload Image"),
+      span("Select Image"),
       input({
         type: "file",
         accept: "image/*",
