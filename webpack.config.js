@@ -9,6 +9,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       title: "FUTC's Halationify",
       favicon: "./src/favicon.png",
+      template: "./src/index.html"
     }),
     new MiniCssExtractPlugin(),
   ],
