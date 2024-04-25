@@ -2,7 +2,7 @@
 
 Add Analog Film-Like Halations to your digital images with this webapp.
 
-Built with [Vite](https://vitejs.dev) + [VanJS](https://vanjs.org) + [Photon](https://github.com/silvia-odwyer/photon)
+Built with [VanJS](https://vanjs.org) + [Photon](https://github.com/silvia-odwyer/photon)
 
 ## How to use
 
@@ -22,3 +22,12 @@ Built with [Vite](https://vitejs.dev) + [VanJS](https://vanjs.org) + [Photon](ht
    ```bash
    npm start
    ```
+
+## If you want to contribute
+Feel free to make a pull-request if you want to contribute to the project. Here are some features that could be added in the future:
+- Support for adding film grain
+- Support for applying LUTs
+- Performance improvements
+
+## Bugs
+If you find any bugs, problems, or just have general feedback, feel free to open an issue.
