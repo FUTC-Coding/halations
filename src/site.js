@@ -1,5 +1,6 @@
 import van from "vanjs-core";
 import logo from "./futc_filled.svg";
+import ios from "./ios_compressed.jpg";
 import {
   updateCanvas,
   handleFiles,
@@ -16,6 +17,7 @@ const {
   h1,
   h3,
   h4,
+  h5,
   input,
   label,
   span,
@@ -28,6 +30,47 @@ const {
   dialog,
   article,
 } = van.tags;
+
+export const AdDialog = () => {
+  return dialog(
+    { id: "adDialog" },
+    article(
+      { class: "no-padding" },
+      div(
+        { class: "grid no-space mobile-column" },
+        div(
+          { class: "s6" },
+          img({ class: "responsive", src: ios })
+        ),
+        div(
+          { class: "s6" },
+          div(
+            { class: "padding" },
+            h5("Halationify is now available on iOS!"),
+            p(
+              "Download the much improved version for iPhone and iPad for Free on the App Store."
+            ),
+            nav(
+              a(
+                { href: "https://apps.apple.com/de/app/halationify-analog-photos/id6739345616", target: "_blank" },
+                button({ class: "border round" }, "Download"),
+              ),
+              button(
+                {
+                  class: "border round",
+                  onclick: () => {
+                    document.getElementById("adDialog").close();
+                  },
+                },
+                "Close"
+              )
+            )
+          )
+        )
+      )
+    ),
+  );
+};
 
 export const Dropzone = () => {
   return div({
@@ -48,7 +91,7 @@ export const Navigation = (classes) => {
       {
         onclick: (e) => {
           document.getElementById("infoDialog").showModal();
-          document.getElementById("overlay").classList.add("active");
+          // document.getElementById("overlay").classList.add("active");
         },
       },
       i("question_mark"),
@@ -144,14 +187,14 @@ const Slider3 = (size) => {
 
 export const Dialogs = () => {
   return div(
-    div({
-      class: "overlay",
-      id: "overlay",
-      onclick: (e) => {
-        e.target.classList.remove("active");
-        document.getElementById("infoDialog").close();
-      },
-    }),
+    // div({
+    //   class: "overlay",
+    //   id: "overlay",
+    //   onclick: (e) => {
+    //     e.target.classList.remove("active");
+    //     document.getElementById("infoDialog").close();
+    //   },
+    // }),
     div(
       { class: "snackbar primary", id: "downloadSnackbar" },
       "Processing Full Resolution Image... this can take a bit :)",
@@ -223,7 +266,7 @@ export const Dialogs = () => {
           button(
             {
               onclick: () => {
-                document.getElementById("overlay").classList.remove("active");
+                // document.getElementById("overlay").classList.remove("active");
                 document.getElementById("infoDialog").close();
               },
             },
@@ -232,6 +275,7 @@ export const Dialogs = () => {
         ),
       ),
     ),
+    AdDialog(),
   );
 };
 
@@ -382,13 +426,42 @@ function allowDrag(e) {
   }
 }
 
+// function allowDrag(e) {
+//   // Check if there are any items being dragged
+//   if (e.dataTransfer.types && e.dataTransfer.types.length > 0) {
+//     console.log(e.dataTransfer.files)
+//     // Check if any of the dragged items are of type 'image/jpeg' or 'image/png'
+//     if (
+//       Array.from(e.dataTransfer.types).some(
+//         type => type === "image/jpeg" || type === "image/png"
+//       )
+//     ) {
+//       // Test that the item being dragged is a valid one
+//       e.dataTransfer.dropEffect = "copy";
+//       e.preventDefault();
+//     } else {
+//       e.dataTransfer.dropEffect = "none";
+//       e.preventDefault();
+//     }
+//   } else {
+//     // No items being dragged
+//     e.preventDefault();
+//   }
+// }
+
+
 function handleDrop(e) {
   e.preventDefault();
   hideDropZone();
+  console.log(e.dataTransfer.files)
 
   handleFiles(e.dataTransfer.files);
 }
 
 window.addEventListener("dragenter", function (e) {
   showDropZone();
+});
+
+window.addEventListener("load", () => {
+  document.getElementById("adDialog").showModal();
 });

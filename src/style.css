@@ -25,6 +25,17 @@ body {
   border: 11px dashed var(--primary);
 }
 
+.mobile-column {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 800px) {
+  .mobile-column {
+    flex-direction: row;
+  }
+}
+
 body.dark {
   --primary: #53dbc9;
   --on-primary: #003731;
