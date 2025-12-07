@@ -31,3 +31,6 @@ Feel free to make a pull-request if you want to contribute to the project. Here 
 
 ## Bugs
 If you find any bugs, problems, or just have general feedback, feel free to open an issue.
+
+# License
+The code in this project is licensed under GPLv3. Except for the images and vector graphics which are not free to use.
