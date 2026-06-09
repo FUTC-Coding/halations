@@ -20,7 +20,7 @@
     "style-loader": "^4.0.0",
     "webpack": "^5.105.3",
     "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "^5.0.4"
+    "webpack-dev-server": "^5.2.4"
   },
   "dependencies": {
     "@silvia-odwyer/photon": "^0.3.2",
