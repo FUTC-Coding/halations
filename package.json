@@ -23,9 +23,9 @@
     "webpack-dev-server": "^5.2.4"
   },
   "dependencies": {
-    "@silvia-odwyer/photon": "^0.3.3",
-    "beercss": "^3.13.3",
-    "vanjs-core": "^1.6.0"
+    "@silvia-odwyer/photon": "^0.3.2",
+    "beercss": "^3.5.1",
+    "vanjs-core": "^1.5.0"
   },
   "overrides": {
     "uuid": "^11.1.1"
