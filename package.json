@@ -23,7 +23,7 @@
     "webpack-dev-server": "^5.2.4"
   },
   "dependencies": {
-    "@silvia-odwyer/photon": "^0.3.2",
+    "@silvia-odwyer/photon": "0.3.2",
     "beercss": "^3.5.1",
     "vanjs-core": "^1.5.0"
   },
